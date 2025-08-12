@@ -1,0 +1,33 @@
+[
+  {
+    "mapId": "valley",
+    "x": 0,
+    "y": 0,
+    "locationName": "Valley Entrance",
+    "description": "You stand at the edge of a misty valley.",
+    "enemySpawns": [ "Wolf" ],
+    "itemSpawnChance": 0.1,
+    "events": [ "intro_cutscene" ]
+  },
+  {
+    "mapId": "valley",
+    "x": 0,
+    "y": 1,
+    "locationName": "Rocky Trail",
+    "description": "The path winds between jagged rocks.",
+    "enemySpawns": [ "Wolf", "Dire Wolf" ],
+    "itemSpawnChance": 0.05,
+    "events": []
+  },
+
+  {
+    "mapId": "valley",
+    "x": 1,
+    "y": 0,
+    "locationName": "Side Trail",
+    "description": "The path winds between no jagged rocks.",
+    "enemySpawns": [ "Wolf", "Dire Wolf" ],
+    "itemSpawnChance": 0.05,
+    "events": []
+  }
+]

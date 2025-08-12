@@ -1,0 +1,172 @@
+﻿@page
+@model Wyrmquest.Pages.Game.IndexModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Wyrmquest</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #ddd;
+        }
+
+        .top-bar {
+            background-color: #2c2c2c;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #444;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 200px 1fr 200px;
+            grid-template-rows: 1fr 120px;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-right: 1px solid #444;
+        }
+
+        .main {
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .right-panel {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-left: 1px solid #444;
+        }
+
+        .chat {
+            grid-column: 1 / span 3;
+            background-color: #1a1a1a;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 0.9em;
+            border-top: 1px solid #444;
+        }
+
+        a {
+            color: #8ecfff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        Health: @Model.PlayerHealth | XP: @Model.PlayerXP | Gold: @Model.PlayerGold
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>Menu</h3>
+            <ul>
+<li><button onclick="togglePanel('statsPanel')">View Stats</button></li>
+<li></l;environment><button onclick="togglePanel('inventoryPanel')">Inventory</button></li>
+<li><button onclick="togglePanel('settingsPanel')">Settings</button></li>
+            </ul>
+
+            <div id="statsPanel" class="panel" style="display:none;">
+    <h3>Stats</h3>
+    <ul>
+        <li>Strength: 1</li>
+        <li>Dexterity: 1</li>
+        <li>Agility: 1</li>
+        <li>Evasion: 1</li>
+        <li>Intelligence: 1</li>
+        <li>Wisdom: 1</li>
+        <li>Luck: 1</li>
+        <li>Health: 100</li>
+        <li>Mana: 50</li>
+    </ul>
+</div>
+
+<div id="inventoryPanel" class="panel" style="display:none;">
+    <h3>Inventory</h3>
+    <p>(Inventory items go here)</p>
+</div>
+
+<div id="settingsPanel" class="panel" style="display:none;">
+    <h3>Settings</h3>
+    <p>(Settings options go here)</p>
+</div>
+
+<script>
+    function togglePanel(panelId) {
+    const panels = ['statsPanel', 'inventoryPanel', 'settingsPanel'];
+    panels.forEach(id => {
+        const panel = document.getElementById(id);
+    if (id === panelId) {
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        } else {
+        panel.style.display = 'none';
+        }
+    });
+}
+</script>
+
+
+        </div>
+
+        <div class="main">
+            <h2>Wyrmquest</h2>
+            <p>@Model.GameMessage</p>
+
+<p>
+                @foreach (var dir in Model.AvailableDirections)
+                {
+                    <form method="post">
+                        <input type="hidden" name="direction" value="@dir.Key" />
+                        <button type="submit">@dir.Key</button>
+                    </form>    
+                }
+
+                <!--Debug current player location-->
+                <p>Current Position: @Model.Position.MapId (@Model.Position.X, @Model.Position.Y)</p>
+
+
+    <!--
+    <a href="?move=north">Go North</a> |
+    <a href="?move=south">Go South</a> |
+    <a href="?move=east">Go East</a> |
+    <a href="?move=west">Go West</a>
+    -->
+</p>
+        </div>
+
+        <div class="right-panel">
+            <!-- Reserved for future use -->
+        </div>
+
+        <div class="chat">
+            <strong>Chat Log:</strong><br />
+            @Html.Raw(Model.ChatLog)
+        </div>
+    </div>
+</body>
+</html>
