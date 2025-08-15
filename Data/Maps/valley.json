@@ -7,7 +7,14 @@
     "description": "You stand at the edge of a misty valley.",
     "enemySpawns": [ "Wolf" ],
     "itemSpawnChance": 0.1,
-    "events": [ "intro_cutscene" ]
+    "events": [],
+    "directions": {
+      "Enter Town": {
+        "mapId": "town",
+        "x": 0,
+        "y": 2
+      }
+    }
   },
   {
     "mapId": "valley",

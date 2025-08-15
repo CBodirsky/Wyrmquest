@@ -1,0 +1,135 @@
+[
+  {
+    "mapId": "town",
+    "x": -100,
+    "y": -100,
+    "cardinalOnly": true,
+    "locationName": "Template Location",
+    "description": "You shouldn't be here. How did you do it? Actually just go back to the valley.",
+    "enemySpawns": [ "TEMPLATE_Bad Guy"],
+    "itemSpawnChance": 0.0,
+    "events": [ "TEMPLATE_Fun Event"],
+    "directions": {
+      "Enter Valley": {
+        "mapId": "valley",
+        "x": 0,
+        "y": 0
+
+      }
+    }
+  },
+
+  {
+    "mapId": "town",
+    "x": 0,
+    "y": 2,
+    "cardinalOnly": true,
+    "locationName": "Town Entrance",
+    "description": "North town entrance to the valley. To the south lies the village.",
+    "directions": {
+      "Enter Valley": {
+        "mapId": "valley",
+        "x": 0,
+        "y": 0
+
+      }
+    }
+  },
+  {
+    "mapId": "town",
+    "x": -1,
+    "y": 1,
+    "cardinalOnly": true,
+    "locationName": "Test Shop Entrance",
+    "description": "Northwest corner of town. Shops potentially to north, northwest, and west of here.",
+    "directions": {
+      "Enter Shop": {
+        "mapId": "town",
+        "x": 10,
+        "y": 10
+      }
+    }
+  },
+
+  {
+    "mapId": "town",
+    "x": 0,
+    "y": 1,
+    "cardinalOnly": true,
+    "locationName": "North town",
+    "description": "North town section. North leads to the valley, west and east are roads around the town, south to the central fountain.",
+  },
+  {
+    "mapId": "town",
+    "x": 1,
+    "y": 1,
+    "cardinalOnly": true,
+    "locationName": "North East Town",
+    "description": "Northeast corner of town. Locations potentially to the north, northeast, and east of here.",
+  },
+  {
+    "mapId": "town",
+    "x": -1,
+    "y": 0,
+    "cardinalOnly": true,
+    "locationName": "West Town",
+    "description": "West side of town. A large locked gate blocks the road westward. You're not sure what lies that way, but you can't find a way there anyway.",
+  },
+  {
+    "mapId": "town",
+    "x": 0,
+    "y": 0,
+    "cardinalOnly": true,
+    "locationName": "Center Fountain",
+    "description": "Before you stands a tall fountain. The faded and stained stone carries a certain aura that looms over you. It doesn't give off a vileness, however the mystery of how the water flows and why it has never stopped is ignored by the locals.'",
+  },
+  {
+    "mapId": "town",
+    "x": 1,
+    "y": 0,
+    "cardinalOnly": true,
+    "locationName": "East Town",
+    "description": "East side of town. The path is open to the east, but something compells you to not go that way.",
+  },
+  {
+    "mapId": "town",
+    "x": 1,
+    "y": -1,
+    "cardinalOnly": true,
+    "locationName": "South East Town",
+    "description": "Southeast corner of town. Potential locations to the east, southeast, and south of here.",
+  },
+  {
+    "mapId": "town",
+    "x": 0,
+    "y": -1,
+    "cardinalOnly": true,
+    "locationName": "South Town",
+    "description": "South entrance of the town. A path to the south is blocked by a fallen tree and you don't want to step over it.",
+  },
+  {
+    "mapId": "town",
+    "x": -1,
+    "y": -1,
+    "cardinalOnly": true,
+    "locationName": "South West Town",
+    "description": "Southwest corner of town. Potential locations to the south, southwest, and west.",
+  },
+
+
+  {
+    "mapId": "town",
+    "x": 10,
+    "y": 10,
+    "cardinalOnly": true,
+    "locationName": "Test Shop Entrance",
+    "description": "North east show for testing limited entrances.",
+    "directions": {
+      "Leave Shop": {
+        "mapId": "town",
+        "x": -1,
+        "y": 1
+      }
+    }
+  }
+]
