@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Rusty Key",
+    "imageName": "rusty_key.png"
+  },
+  {
+    "id": 2,
+    "name": "Ancient Coin",
+    "imageName": "ancient_coin.png"
+  },
+  {
+    "id": 3,
+    "name": "Healing Herb",
+    "imageName": "healing_herb.png"
+  }
+]

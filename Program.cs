@@ -1,3 +1,5 @@
+using Wyrmquest.Services;
+
 namespace Wyrmquest
 {
     public class Program
@@ -9,6 +11,15 @@ namespace Wyrmquest
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddSession();
+
+            builder.Services.AddSingleton<EnemyRepository>(provider =>
+            {
+                var path = Path.Combine(AppContext.BaseDirectory, "Data", "Enemies.json");
+                return new EnemyRepository(path);
+            });
+
+            builder.Services.AddSingleton<EnemySpawnResolver>();
+            builder.Services.AddSingleton<MapService>();
 
             var app = builder.Build();
 

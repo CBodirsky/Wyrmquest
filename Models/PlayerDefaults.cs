@@ -19,7 +19,7 @@ namespace Wyrmquest.Models
 
         public static PlayerPosition GetPosition() => new()
         {
-            MapId = "town",
+            MapId = "Town",
             X = 0,
             Y = 0
         };

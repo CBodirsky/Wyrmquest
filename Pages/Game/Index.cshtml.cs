@@ -1,3 +1,4 @@
+// I hate to say this, but Index...you're getting a little fat. We need to slim you down soon.
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
@@ -10,29 +11,39 @@ namespace Wyrmquest.Pages.Game
     {
         private const string PositionKey = "PlayerPosition";
 
-        public PlayerStats Stats { get; set; } = PlayerDefaults.GetStats();
+        public PlayerStats Stats { get; set; } = PlayerDefaults.GetStats(); //Placeholder for PlayerStats, remove later.
         public PlayerPosition Position { get; set; } = PlayerDefaults.GetPosition();
-        public int PlayerHealth { get; set; } = 100;
+        public int PlayerHealth { get; set; } = 100; //Placeholder along with XP and Gold, remove later.
         public int PlayerXP { get; set; } = 0;
         public int PlayerGold { get; set; } = 50;
         public string GameMessage { get; set; }
         public string ChatLog { get; set; } = "Welcome to Wyrmquest.";
         public List<DirectionLink> AvailableDirections { get; set; } = new();
         public string CurrentMapId => Position.MapId;
-        public int PlayerX => Position.X;
-        public int PlayerY => Position.Y;
-        public LocationTile CurrentTile => MapService.GetTile(Position.MapId, Position.X, Position.Y);
+        public MapData CurrentMap { get; set; }
 
+        public Enemy SpawnedEnemy { get; set; }
+        public MapTile CurrentTile =>
+            CurrentMap?.Tiles.FirstOrDefault(t => t.X == Position.X && t.Y == Position.Y);
         public List<DirectionOption> CompassDirections { get; set; } = new();
         public List<SpecialAction> SpecialActions { get; set; } = new();
+        public readonly MapService _mapService;
+        public readonly EnemySpawnResolver _enemyService;
+
+        public IndexModel(MapService mapService, EnemySpawnResolver enemyService) //Consider refactoring soon
+        {
+            _mapService = mapService;
+            _enemyService = enemyService;
+        }
 
         private void RefreshGameState(string view = "")
         {
             EnsureMapLoaded();
             UpdateGameMessage(view);
+            UpdateSpecialActions();
             UpdateAvailableDirections();
             UpdateCompassDirections();
-            UpdateSpecialActions();
+            
         }
 
         public void OnGet()
@@ -41,17 +52,28 @@ namespace Wyrmquest.Pages.Game
             var direction = Request.Query["move"];
 
             LoadPositionFromSession();
-            var mapPath = Path.Combine(AppContext.BaseDirectory, "Data", "Maps", $"{Position.MapId}.json");
-            MapService.LoadMap(mapPath);
 
+            LoadAndAssignMap(Position.MapId); 
+            ResolveCurrentTile();             
 
             if (!string.IsNullOrEmpty(direction))
             {
+                UpdateSpecialActions(); //revisit this and OnPost entry. Required to have non-cardinal directions, but not sure this is a good way to handle it.
+
                 MovePlayer(direction);
-                //CheckForMapTransition();
                 SavePositionToSession();
 
                 ChatLog = $"System: You moved {direction}.<br />" + ChatLog;
+
+                LoadAndAssignMap(Position.MapId);
+                ResolveCurrentTile();
+            }
+
+            var region = _mapService.GetRegion(Position.MapId, CurrentTile?.RegionName);
+            SpawnedEnemy = _enemyService.Resolve(CurrentTile, region);
+            if (SpawnedEnemy != null)
+            {
+                CurrentTile.EnemyImage = SpawnedEnemy.ImageName;
             }
 
             RefreshGameState(view);
@@ -63,20 +85,52 @@ namespace Wyrmquest.Pages.Game
 
             LoadPositionFromSession();
 
+            LoadAndAssignMap(Position.MapId);
+            ResolveCurrentTile();
+
             if (!string.IsNullOrEmpty(direction))
             {
+                UpdateSpecialActions();
+
                 MovePlayer(direction);
                 SavePositionToSession();
 
                 ChatLog = $"System: You moved {direction}.<br />" + ChatLog;
+
+                LoadAndAssignMap(Position.MapId);
+                ResolveCurrentTile();
             }
+
+            var region = _mapService.GetRegion(Position.MapId, CurrentTile?.RegionName);
+            SpawnedEnemy = _enemyService.Resolve(CurrentTile, region);
 
             RefreshGameState();
         }
 
+        private void LoadAndAssignMap(string mapId)
+        {
+            var mapPath = Path.Combine(AppContext.BaseDirectory, "Data", "Maps", $"{mapId}.json");
+            _mapService.LoadMap(mapPath);
+            CurrentMap = _mapService.GetMap(mapId);
+        }
+
+        private void ResolveCurrentTile()
+        {
+            var tile = CurrentMap?.Tiles.FirstOrDefault(t => t.X == Position.X && t.Y == Position.Y);
+        }
+
+
+        private void UpdateSpecialActions()
+        {
+            SpecialActions = CurrentTile?.Directions?
+                .Where(kvp => !DirectionSet.CanonicalDirectionMap.Values.Contains(kvp.Key.ToLower()))
+                .Select(kvp => new SpecialAction(kvp.Key.Trim(), kvp.Key.Trim(), kvp.Value))
+                .ToList() ?? new();
+        }
+
         private void UpdateCompassDirections()
         {
-            var available = MapService.GetAvailableDirections(Position.MapId, Position.X, Position.Y);
+            var available = _mapService.GetAvailableDirections(Position.MapId, Position.X, Position.Y);
 
             CompassDirections = DirectionSet.CompassOrder.Select(dir =>
             {
@@ -84,22 +138,11 @@ namespace Wyrmquest.Pages.Game
                 {
                     return new DirectionOption("You", " ", false);
                 }
-
                 var label = DirectionSet.Labels[dir];
                 var canonical = DirectionSet.CanonicalDirectionMap[dir];
-
                 var isAvailable = available.ContainsKey(canonical);
-
                 return new DirectionOption(canonical, label, isAvailable);
             }).ToList();
-        }
-
-        private void UpdateSpecialActions()
-        {
-            SpecialActions = CurrentTile?.Directions?
-                .Where(kvp => !DirectionSet.CanonicalDirectionMap.Values.Contains(kvp.Key))
-                .Select(kvp => new SpecialAction(kvp.Key, kvp.Key))
-                .ToList() ?? new();
         }
 
         private void LoadPositionFromSession()
@@ -111,12 +154,9 @@ namespace Wyrmquest.Pages.Game
                 Position = PlayerDefaults.GetPosition();
                 return;
             }
-
             Position = JsonSerializer.Deserialize<PlayerPosition>(posJson) ?? PlayerDefaults.GetPosition();
             Console.WriteLine($"Loaded position: {Position.MapId} ({Position.X}, {Position.Y})");
-
         }
-
 
         private void SavePositionToSession()
         {
@@ -125,7 +165,7 @@ namespace Wyrmquest.Pages.Game
 
         private void EnsureMapLoaded()
         {
-            if (!MapService.HasLocation(Position.MapId, Position.X, Position.Y))
+            if (!_mapService.HasLocation(Position.MapId, Position.X, Position.Y))
             {
                 ChatLog = $"System: Invalid transition target ({Position.MapId}, {Position.X}, {Position.Y}).<br />" + ChatLog;
                 Position = PlayerDefaults.GetPosition();
@@ -146,7 +186,7 @@ namespace Wyrmquest.Pages.Game
                     GameMessage = "Settings are not yet implemented.";
                     break;
                 default:
-                    var tile = MapService.GetTile(Position.MapId, Position.X, Position.Y);
+                    var tile = _mapService.GetTile(Position.MapId, Position.X, Position.Y);
                     GameMessage = tile != null
                         ? $"{tile.LocationName}: {tile.Description}"
                         : "You can't go that way.";
@@ -160,15 +200,16 @@ namespace Wyrmquest.Pages.Game
 
         private void UpdateAvailableDirections()
         {
-            var currentTile = MapService.GetTile(Position.MapId, Position.X, Position.Y);
-            var allowDiagonals = !currentTile.CardinalOnly;
-            if (currentTile?.Directions == null)
+            var CurrentTile = _mapService.GetTile(Position.MapId, Position.X, Position.Y);
+            //Console.WriteLine($"Directions CurrentTile: {CurrentTile?.LocationName} at ({CurrentTile?.X},{CurrentTile?.Y})");
+            var allowDiagonals = !CurrentTile.CardinalOnly;
+            if (CurrentTile?.Directions == null)
             {
                 AvailableDirections = new();
                 return;
             }
 
-            var named = currentTile.Directions
+            var named = CurrentTile.Directions
                 .Where(d => !IsCardinal(d.Key))
                 .OrderBy(d => d.Key)
                 .Select(d => new DirectionLink
@@ -183,7 +224,7 @@ namespace Wyrmquest.Pages.Game
                     }
                 });
 
-            var cardinal = currentTile.Directions
+            var cardinal = CurrentTile.Directions
                 .Where(d => IsCardinal(d.Key))
                 .OrderBy(d => d.Key)
                 .Select(d => new DirectionLink
@@ -197,40 +238,36 @@ namespace Wyrmquest.Pages.Game
                         Y = d.Value.Y
                     }
                 });
-
             AvailableDirections = named.Concat(cardinal).ToList();
         }
 
         private void MovePlayer(string direction)
         {
-            var currentTile = MapService.GetTile(Position.MapId, Position.X, Position.Y);
+            var CurrentTile = _mapService.GetTile(Position.MapId, Position.X, Position.Y);
+            Console.WriteLine($"MovePlayer CurrentTile: {CurrentTile?.LocationName} at ({CurrentTile?.X},{CurrentTile?.Y})");
 
             // 1. Try named direction (special action)
-            if (currentTile?.Directions != null)
+            var special = SpecialActions.FirstOrDefault(s => s.Action == direction);
+            if (special != null)
             {
-                var match = currentTile.Directions
-                    .FirstOrDefault(kvp => kvp.Key.Equals(direction, StringComparison.OrdinalIgnoreCase));
-
-                if (!match.Equals(default(KeyValuePair<string, DirectionTarget>)))
-                {
-                    Position.MapId = match.Value.MapId;
-                    Position.X = match.Value.X;
-                    Position.Y = match.Value.Y;
-
-                    MapService.LoadMap($"Data/Maps/{Position.MapId}.json");
-                    return;
-                }
+                Position.MapId = special.Target.MapId;
+                Position.X = special.Target.X;
+                Position.Y = special.Target.Y;
+                _mapService.LoadMap(Path.Combine(AppContext.BaseDirectory, "Data", "Maps", $"{Position.MapId}.json"));
+                CurrentMap = _mapService.GetMap(Position.MapId);
+                var tile = CurrentMap?.Tiles.FirstOrDefault(t => t.X == Position.X && t.Y == Position.Y);
+                Console.WriteLine($"[DEBUG] After jump: Tile = {tile?.LocationName} at ({tile?.X},{tile?.Y})");
+                return;
             }
 
             // 2. Try compass movement
             var offset = DirectionSet.All
                 .FirstOrDefault(d => d.name.Equals(direction, StringComparison.OrdinalIgnoreCase));
-
             if (offset != default)
             {
                 var newX = Position.X + offset.dx;
                 var newY = Position.Y + offset.dy;
-                if (MapService.HasLocation(Position.MapId, newX, newY))
+                if (_mapService.HasLocation(Position.MapId, newX, newY))
                 {
                     Position.X = newX;
                     Position.Y = newY;
@@ -239,6 +276,18 @@ namespace Wyrmquest.Pages.Game
             }
             // 3. Fallback message
             ChatLog = $"System: You can't go {direction}.<br />" + ChatLog;
+        }
+    }
+    public class SpecialAction
+    {
+        public string Label { get; set; }
+        public string Action { get; set; }
+        public DirectionTarget Target { get; set; }
+        public SpecialAction(string label, string action, DirectionTarget target)
+        {
+            Label = label;
+            Action = action;
+            Target = target;
         }
     }
 }

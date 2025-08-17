@@ -1,0 +1,46 @@
+[
+  {
+    "id": 101,
+    "name": "Gnawbone",
+    "altname": "Rat",
+    "imageName": "gnawbone.png",
+    "description": "A gnawbone lumbers across your path.",
+    "aggressive":  false,
+    "hp": 5,
+    "attack": 1,
+    "exp": 3
+  },
+  {
+    "id": 102,
+    "name": "Thornkin",
+    "altname": "Goblin",
+    "imageName": "thornkin.png",
+    "description": "A thornkin stands ready for a fight.",
+    "aggressive":  false,
+    "hp": 15,
+    "attack": 4,
+    "exp": 10
+  },
+  {
+    "id": 103,
+    "name": "Murkwing",
+    "altname": "Bat",
+    "imageName": "murkwing.png",
+    "description": "A murkwing flutters over and lands nearby.",
+    "aggressive": false,
+    "hp": 9,
+    "attack": 2,
+    "exp": 6
+  },
+  {
+    "id": 104,
+    "name": "Hollowcloak",
+    "altname": "Bandit",
+    "imageName": "Hollowcloak.png",
+    "description": "A hollowcloak motions suggestive for you to come closer.",
+    "aggressive": false,
+    "hp": 35,
+    "attack": 13,
+    "exp": 24
+  }
+]

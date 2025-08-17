@@ -71,17 +71,5 @@
                 IsAvailable = isAvailable;
             }
         }
-
-        public class SpecialAction
-        {
-            public string Action { get; set; }
-            public string Label { get; set; }
-
-            public SpecialAction(string action, string label)
-            {
-                Action = action;
-                Label = label;
-            }
-        }
     }
 

@@ -1,40 +1,131 @@
-[
-  {
-    "mapId": "valley",
-    "x": 0,
-    "y": 0,
-    "locationName": "Valley Entrance",
-    "description": "You stand at the edge of a misty valley.",
-    "enemySpawns": [ "Wolf" ],
-    "itemSpawnChance": 0.1,
-    "events": [],
-    "directions": {
-      "Enter Town": {
-        "mapId": "town",
-        "x": 0,
-        "y": 2
-      }
-    }
-  },
-  {
-    "mapId": "valley",
-    "x": 0,
-    "y": 1,
-    "locationName": "Rocky Trail",
-    "description": "The path winds between jagged rocks.",
-    "enemySpawns": [ "Wolf", "Dire Wolf" ],
-    "itemSpawnChance": 0.05,
-    "events": []
-  },
 
   {
-    "mapId": "valley",
-    "x": 1,
-    "y": 0,
-    "locationName": "Side Trail",
-    "description": "The path winds between no jagged rocks.",
-    "enemySpawns": [ "Wolf", "Dire Wolf" ],
-    "itemSpawnChance": 0.05,
-    "events": []
+    "mapId": "Valley",
+    "cardinalOnly": false,
+    "regions": {
+      "lowerValley": {
+        "spawnChance": 0.9,
+        "enemySpawns": [ { "name": "Gnawbone", "weight": 1 } ]
+      },
+      "midValley": {
+        "spawnChance": 0.9, 
+        "enemySpawns":  [ { "name": "Gnawbone", "weight": 3}, {"name": "Murkwing", "weight": 7} ] 
+      },
+      "thornkinValley": {
+        "spawnChance": 0.8, 
+        "enemySpawns": [ { "name": "Gnawbone", "weight": 2}, {"name": "Thornkin", "weight": 8} ] 
+      },
+      "upperValley": {
+        "spawnChance": 0.8, 
+        "enemySpawns": [ { "name": "Murkwing", "weight": 3 }, {"name": "Hollowcloak", "weight": 7} ] 
+
+      }
+    },
+
+    "tiles": [
+      {
+        "region": "",
+        "cardinalOnly": true,
+        "x": 0,
+        "y": 0,
+        "locationName": "Valley Entrance",
+        "description": "You stand at the edge of a misty Valley.",
+        "locationImage": "valleyentrance.png",
+        "itemSpawnChance": 0.1,
+        "events": [],
+        "directions": {
+          "Enter Town": {
+            "mapId": "Town",
+            "x": 0,
+            "y": 2
+          }
+        }
+      },
+      {
+        "region": "lowerValley",
+        "cardinalOnly": true,
+        "x": 0,
+        "y": 1,
+        "locationName": "Old Road",
+        "description": "A decrepit paved road runs north here, dirt overtaking much of it.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "lowerValley",
+        "cardinalOnly": true,
+        "x": 0,
+        "y": 2,
+        "locationName": "Old Road",
+        "description": "The path winds between jagged rocks.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "lowerValley",
+        "x": 0,
+        "y": 3,
+        "locationName": "Old Road",
+        "description": "Nearby foliage struggles to bloom.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "lowerValley",
+        "x": 0,
+        "y": 4,
+        "locationName": "Old Road",
+        "description": "A nearly dead tree provides minimal shade nearby.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "lowerValley",
+        "x": 0,
+        "y": 5,
+        "locationName": "Old Road",
+        "description": "The path looks to curve up ahead.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "lowerValley",
+        "x": 0,
+        "y": 6,
+        "locationName": "Old Road",
+        "description": "There's a split north of here. It was hard to tell before, but it's clear now.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "midValley",
+        "x": 0,
+        "y": 7,
+        "locationName": "Old Road Split",
+        "description": "The trail splits here. A darker valley to the northwest, seeming to compell travelers from entering. Forestry far to the northeast. Town to the south.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+      {
+        "region": "midValley",
+        "x": 1,
+        "y": 8,
+        "locationName": "Valley Path",
+        "description": "The land seems to darken to the southwest. To the northeast, the land gets greener.",
+        "itemSpawnChance": 0.05,
+        "events": []
+      },
+
+      {
+        "region": "",
+        "cardinalOnly": true,
+        "x": -1,
+        "y": 1,
+        "locationName": "Town Outskirts Entrance",
+        "description": "A large gate stands here, forbidding those who aren't ready to enter to the west.",
+        "locationImage": "",
+        "itemSpawnChance": 0.05,
+        "events": []
+      }
+    ]
   }
-]
