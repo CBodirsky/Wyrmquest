@@ -1,5 +1,7 @@
 # 🐉 Wyrmquest
 
+Currently live at https://wyrmquest.azurewebsites.net/
+
 **Wyrmquest** is a browser-based RPG engine built for expressive worldbuilding, modular architecture, and mythic gameplay. Players explore a tile-based map, engage in combat, gather loot, and shape the world through progression and choices. Designed with clarity, scalability, and lore-driven logic at its core.
 
 ---
